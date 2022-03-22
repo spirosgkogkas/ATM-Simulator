@@ -14,11 +14,11 @@
 			User();
 			~User();
 			printMenu(); // -----------------------------
-			User(const User &obj);
+			std::string getPassword()const{return this->password;}
 		private:
-			char *holderName;
-			char password[4];
-			char accountNumber[16];
+			std::string name;
+			std::string password;
+			std::string accountNumber;
 			long long int balance;
 		};
 
@@ -26,14 +26,14 @@
 		public:
 			ATM();
 			~ATM();
-			void setUser();// ---------------------------
+			bool validatePassword(std::string pw)const{return this->currentUser.getPassword() == pw;}
+			bool checkAccountNumber();
+			void setUser();//---------------------------
 			bool createAccount();
 			void printMenu();
 		private:
 			atmdecl::User currentUser;
 			std::fstream membersDatFile;
-		};
-
-		
+		};	
 	}
 #endif

@@ -1,31 +1,75 @@
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 
-int main(int argc, char const *argv[])
-{
-	system("chcp 65001");
-std::string upEdge = "\u250F";
-	std::string line = "\u2501";
-	std::string upEdge2 = "\u2513";
-	std::string side = "\u2503";
-	std::string downEdge = "\u2517";
-	std::string downEdge2 = "\u251B";
+class User{
+		public:
+			User();
+			~User();
+			printMenu(); // -----------------------------
+			User(const User &obj);
+			void setAcc(std::string acc);
+			void setPassword(std::string pw);
+			void setName(std::string name);
+			void setBalance(std::string balance);
+			void getAll() const;
+		private:
+			std::string name;
+			std::string password;
+			std::string accountNumber;
+			double balance;
+};
 
-	std::cout << std::setw(129) << "ΔΗΜΙΟΥΡΓΙΑ ΛΟΓΑΡΙΑΣΜΟΥ" << std::endl;
-	std::cout << std::setw(80) << upEdge;
-	for(int i = 0; i < 38; i++)
-		std::cout << line;
-	std::cout << upEdge2 << '\n';
-	std::cout << std::setw(80) << side << "[1]:Κατάθεση μετρητών" << std::setw(20) << side << std::endl;
-	std::cout << std::setw(80) << side << "[2]:Ανάληψη μετρητών" << std::setw(21) << side << std::endl;
-	std::cout << std::setw(80) << side << "[3]:Μεταφορά" << std::setw(29) << side << std::endl;
-	std::cout << std::setw(80) << side << "[4]:Τελευταίες συναλλαγές" << std::setw(16) << side << std::endl;
-	std::cout << std::setw(80) << side << "[5]:Πληροφορίες λογαριασμού" << std::setw(14) << side << std::endl;
-	std::cout << std::setw(80) << side << "[6]:Αλλαγή κωδικού" << std::setw(23) << side << std::endl;
-	std::cout << std::setw(80) << side << "[7]:Έξοδος" << std::setw(31) << side << std::endl;
-	std::cout << std::setw(80) << downEdge;
-	for(int i = 0; i < 38; i++)
-		std::cout << line;
-	std::cout << downEdge2 << std::endl;
-	return 0;
+bool getAccountNumber(std::string token){
+	std::string temp;
+	std::fstream fp;
+	User currentUser;
+
+	fp.open("test.txt", std::ios::in);
+	if(!fp.is_open())
+		std::cerr << "File not found . . ." << std::endl;
+	do{
+		getline(fp, temp, ' ');
+		if(temp == token){
+			currentUser.setAcc(token);
+			getline(fp, temp, ' ');
+			currentUser.setPassword(temp);
+			getline(fp, temp, ' ');
+			currentUser.setName(temp);
+			getline(fp, temp, ' ');
+			currentUser.setBalance(temp);
+			currentUser.getAll();
+			return true;
+		}
+	}while(!fp.eof());
+	return false;
+}
+
+int main(int argc, char const *argv[]){
+	User p1;
+	// std::fstream fp;
+	// std::string a;
+	// fp.open("test.txt", std::ios::in);
+	// if(!fp.is_open())
+	// 	std::cerr << "File not found . . ." << std::endl;
+	// while(!fp.eof()){
+	// 	getline(fp, a, ' ');
+	// }
+	std::cout << getAccountNumber("GR12345678911111");
+	return EXIT_SUCCESS;
+}
+
+void User::setAcc(std::string acc){this->accountNumber = acc;}
+void User::setPassword(std::string pw){this->password = pw;}
+void User::setName(std::string name){this->name = name;}
+void User::setBalance(std::string balance){this->balance = std::stod(balance.c_str());}
+void User::getAll() const{
+	std::cout << this->name << ' ' << this->password << ' ' << this->accountNumber << ' ' << this->balance << std::endl;
+}
+
+User::User(){
+
+}
+User::~User(){
+
 }
