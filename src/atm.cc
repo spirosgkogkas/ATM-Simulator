@@ -12,6 +12,14 @@ atmdecl::ATM::~ATM(){
 	this->membersDatFile.close();
 }
 
+atmdecl::User::User(){
+
+}
+
+atmdecl::User::~User(){
+	
+}
+
 void atmdecl::ATM::printMenu(){
 	/*Menu for the start of the program*/
 	std::string upEdge = "\u250F";
@@ -44,15 +52,31 @@ bool atmdecl::ATM::setUser(std::string token){
 			if it's equal we store the info of the current user to our user obj (currentUser) and we return true.
 			else we return false.
 		*/
-		getline(fp, temp, ' ');
+		getline(this->membersDatFile, temp, ' ');
 		if(temp == token){
-			this->currentUser.accountNumber = token;
-			getline(fp, this->currentUser.password, ' ');
-			getline(fp, this->currentUser.name, ' ');
-			getline(fp, temp, ' ');
-			this->balance = std::stod(temp);
+			this->currentUser.setToken(token);
+			getline(this->membersDatFile, temp, ' ');
+			this->currentUser.setPassword(temp);
+			getline(this->membersDatFile, temp, ' ');
+			this->currentUser.setName(temp);
+			getline(this->membersDatFile, temp, ' ');
+			// this->balance = std::stod(temp);
+			this->currentUser.setBalance(std::stod(temp));
+			std::cout << "SUCCESS";
+			this->membersDatFile.seekg(0);
 			return true;
 		}
-	}while(!fp.eof());
+	}while(!this->membersDatFile.eof());
+	this->membersDatFile.seekg(0);
 	return false;
+}
+
+atmdecl::ATM::createUser(){
+	this->membersDatFile.close();
+	this->membersDatFile.open(BANK_DAT_FILE, std::ios::app);
+	if(!this->membersDatFile){
+		std::cout << "Δεν μπορείς να Δημιουργήσεις λογαριασμό. . .\n";
+		return;
+	}
+
 }

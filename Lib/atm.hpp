@@ -7,7 +7,7 @@
 	#include <fstream>
 	#include <iomanip>
 	#define ATM_DECL
-	#define BANK_DAT_FILE "bank.dat"
+	#define BANK_DAT_FILE "..\\test.txt"
 	namespace atmdecl{
 		class User{
 		public:
@@ -15,6 +15,10 @@
 			~User();
 			printMenu(); // -----------------------------
 			std::string getPassword()const{return this->password;}
+			void setToken(std::string token){this->accountNumber = token;}
+			void setName(std::string name){this->name = name;}
+			void setPassword(std::string pw){this->password = pw;}
+			void setBalance(double balance){this->balance = balance;}
 		private:
 			std::string name;
 			std::string password;
@@ -26,7 +30,7 @@
 		public:
 			ATM();
 			~ATM();
-			void setTries(){this->tries > 0 ? this->tries-- : std::cerr << "0 προσπάθειες. . ." std::endl;};
+			// void setTries(){this->tries > 0 ? this->tries-- : std::cerr << "0 προσπάθειες. . ." std::endl;};
 			unsigned short int getTries()const{return this->tries;}
 			bool validatePassword(std::string pw)const{return this->currentUser.getPassword() == pw;}
 			bool setUser(std::string token);
