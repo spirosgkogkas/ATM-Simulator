@@ -3,6 +3,7 @@
 atmdecl::ATM::ATM(){
 	/*Open bank.dat file to read mode */
 	system("chcp 65001 > nul"); //Utf-8 encoding for console output
+	this->tries = 3;
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
 }
 
@@ -34,13 +35,15 @@ void atmdecl::ATM::printMenu(){
 	std::cout << downEdge2 << std::endl;
 }
 
-void atmdecl::ATM::setUser(){
-	
-}
-
-bool atmdecl::ATM::checkAccountNumber(std::string token){
-	std::string temp;
+bool atmdecl::ATM::setUser(std::string token){
+	std::string temp; // Temporary variable for comparison
 	do{
+		/*
+			First getline stores the token of an existing user.
+			The the condition inside the if checks if User's token is equal with the fetched token.
+			if it's equal we store the info of the current user to our user obj (currentUser) and we return true.
+			else we return false.
+		*/
 		getline(fp, temp, ' ');
 		if(temp == token){
 			this->currentUser.accountNumber = token;
