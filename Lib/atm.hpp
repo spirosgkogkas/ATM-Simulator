@@ -18,7 +18,10 @@
 			void setToken(std::string token){this->accountNumber = token;}
 			void setName(std::string name){this->name = name;}
 			void setPassword(std::string pw){this->password = pw;}
-			void setBalance(double balance){this->balance = balance;}
+			void setBalance(std::string balance){this->balance = std::stod(balance);}
+			void printALL(){
+				std::cout << name << ":" << password << ":" << accountNumber << ":" << balance;
+			}
 		private:
 			std::string name;
 			std::string password;

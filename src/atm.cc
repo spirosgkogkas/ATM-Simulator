@@ -4,12 +4,13 @@ atmdecl::ATM::ATM(){
 	/*Open bank.dat file to read mode */
 	system("chcp 65001 > nul"); //Utf-8 encoding for console output
 	this->tries = 3;
-	this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
+	// this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
 }
 
 atmdecl::ATM::~ATM(){
 	/*Close file at the termination of the program*/
-	this->membersDatFile.close();
+	if(this->membersDatFile.is_open())
+		this->membersDatFile.close();
 }
 
 atmdecl::User::User(){
@@ -45,6 +46,16 @@ void atmdecl::ATM::printMenu(){
 
 bool atmdecl::ATM::setUser(std::string token){
 	std::string temp; // Temporary variable for comparison
+	if(this->membersDatFile.is_open()){
+		this->membersDatFile.close();
+		this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
+	}
+	else this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
+	if(!this->membersDatFile.is_open()){
+		std::cerr << "Προβλημα κατά την επεξεργασία δεδομένων. . .\n";
+		return false;
+	}
+
 	do{
 		/*
 			First getline stores the token of an existing user.
@@ -53,6 +64,7 @@ bool atmdecl::ATM::setUser(std::string token){
 			else we return false.
 		*/
 		getline(this->membersDatFile, temp, ' ');
+		std::cout << "POSITION: " << this->membersDatFile.tellg() << '\n';
 		if(temp == token){
 			this->currentUser.setToken(token);
 			getline(this->membersDatFile, temp, ' ');
@@ -60,23 +72,43 @@ bool atmdecl::ATM::setUser(std::string token){
 			getline(this->membersDatFile, temp, ' ');
 			this->currentUser.setName(temp);
 			getline(this->membersDatFile, temp, ' ');
-			// this->balance = std::stod(temp);
-			this->currentUser.setBalance(std::stod(temp));
+			this->currentUser.setBalance(temp);
+			this->currentUser.printALL();
 			std::cout << "SUCCESS";
 			this->membersDatFile.seekg(0);
 			return true;
 		}
 	}while(!this->membersDatFile.eof());
+	this->membersDatFile.clear();
 	this->membersDatFile.seekg(0);
 	return false;
 }
 
-atmdecl::ATM::createUser(){
-	this->membersDatFile.close();
+bool atmdecl::ATM::createAccount(){
+	std::string temp;
+	if(this->membersDatFile.is_open())
+		this->membersDatFile.close();
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::app);
-	if(!this->membersDatFile){
-		std::cout << "Δεν μπορείς να Δημιουργήσεις λογαριασμό. . .\n";
-		return;
+	if(!this->membersDatFile.is_open()){
+		std::cerr << "Πρόβλημα κατα την δημιουργία λογαριασμού. . .\n";
+		return false;
 	}
-
+	std::cout << "Δώσε αριθμό λογαριασμού: "; std::cin >> temp;
+	this->currentUser.setToken(temp);
+	this->membersDatFile << temp << ' ';
+	std::cin.get();
+	std::cout << "Δώσε Δώσε PIN: "; std::cin >> temp;
+	this->currentUser.setName(temp);
+	this->membersDatFile << temp << ' ';
+	std::cin.get();
+	std::cout << "Δώσε ονομα: "; std::cin >> temp;
+	this->currentUser.setName(temp);
+	this->membersDatFile << temp << ' ';
+	std::cin.get();
+	std::cout << "Δώσε ποσό: "; std::cin >> temp;
+	this->currentUser.setBalance(temp);
+	std::cin.get();
+	this->membersDatFile << temp << '\n';
+	std::cout << "SUCCESS";
+	return true;
 }
