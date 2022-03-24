@@ -2,7 +2,7 @@
 
 int main(int argc, char const *argv[])
 {
-	int choice;
+	int choice, choice2 = 1;
 	std::string token;
 	atmdecl::ATM atm;
 	do{
@@ -11,6 +11,7 @@ int main(int argc, char const *argv[])
 		std::cin.get();
 		switch(choice){
 			case 0:
+				choice2 = 0;
 				break;
 			case 1:
 				std::cout << "Δώσε κωδικό λογαριασμού: "; std::cin >> token;
@@ -26,6 +27,6 @@ int main(int argc, char const *argv[])
 			default:
 				std::cout << "Λάθος επιλογή. . .\n";
 		}
-	}while(1);
+	}while(choice2);
 	return 0;
 }

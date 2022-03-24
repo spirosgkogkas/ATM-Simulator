@@ -42,7 +42,7 @@
 		private:
 			unsigned short int tries;
 			atmdecl::User currentUser;
-			std::fstream membersDatFile;
+			std::fstream membersDatFile(BANK_DAT_FILE, std::ios::in);
 		};	
 	}
 #endif

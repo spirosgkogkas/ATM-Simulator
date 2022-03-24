@@ -9,8 +9,10 @@ atmdecl::ATM::ATM(){
 
 atmdecl::ATM::~ATM(){
 	/*Close file at the termination of the program*/
-	if(this->membersDatFile.is_open())
+	if(this->membersDatFile.is_open()){
+		std::cout << "FILE CLOSED. . ." << std::endl;
 		this->membersDatFile.close();
+	}
 }
 
 atmdecl::User::User(){
@@ -63,8 +65,9 @@ bool atmdecl::ATM::setUser(std::string token){
 			if it's equal we store the info of the current user to our user obj (currentUser) and we return true.
 			else we return false.
 		*/
-		getline(this->membersDatFile, temp, ' ');
 		std::cout << "POSITION: " << this->membersDatFile.tellg() << '\n';
+		getline(this->membersDatFile, temp, ' ');
+		std::cout << "POSITION2: " << this->membersDatFile.tellg() << '\n';
 		if(temp == token){
 			this->currentUser.setToken(token);
 			getline(this->membersDatFile, temp, ' ');
@@ -73,7 +76,7 @@ bool atmdecl::ATM::setUser(std::string token){
 			this->currentUser.setName(temp);
 			getline(this->membersDatFile, temp, ' ');
 			this->currentUser.setBalance(temp);
-			this->currentUser.printALL();
+			// this->currentUser.printALL();
 			std::cout << "SUCCESS";
 			this->membersDatFile.seekg(0);
 			return true;
