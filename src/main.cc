@@ -29,40 +29,50 @@ int main(int argc, char const *argv[])
 						: std::cout << "Κλείδωμα λογαριασμού. . ." << std::endl;
 						atm.clearScreen();
 					}
-					else break;
+					else{
+						std::cout << "Επιτυχής σύνδεση.\n";
+						break;
+					}
 					if(!atm.getTries()){
 						std::cout << "Εξοδος προγράμματος. . ." << std::endl;
 						exit(0);
 					}
 				}while(atm.getTries());
-
-				atm.userMenu();
 				int userAction;
-				std::cout << "Δώσε επιλογή: "; std::cin >> userAction;
-				std::cin.get();
-				switch(userAction){
-					case 1:
-						std::cout << "Δώσε ποσό κατάθεσης: "; std::cin >> value;
-						std::cin.get();
-						if(atm.deposit(value))
-							std::cout << "Η κατάθεση ολοκληρώθηκε με επιτυχία.\n";
-						else std::cout << "Μη αποδεκτή κατάθεση. . .\n";
-						atm.updateUser();
-						break;
-					case 2:
-						std::cout << "Δώσε ποσό ανάληψης: "; std::cin >> value;
-						std::cin.get();
-						if(atm.withdrawal(value))
-							std::cout << "Η ανάληψη ολοκληρώθηκε με επιτυχία.\n";
-						else std::cout << "Μη αποδεκτή ανάληψη. . .\n";
-						atm.updateUser();
-						break;
-					case 3:
-						atm.transfer();
-						atm.updateUser();
-						break;
-				}
-				break;
+				do{
+					atm.userMenu();
+					std::cout << "Δώσε επιλογή: "; std::cin >> userAction;
+					std::cin.get();
+					switch(userAction){
+						case 1:
+							std::cout << "Δώσε ποσό κατάθεσης: "; std::cin >> value;
+							std::cin.get();
+							if(atm.deposit(value))
+								std::cout << "Η κατάθεση ολοκληρώθηκε με επιτυχία.\n";
+							else std::cout << "Μη αποδεκτή κατάθεση. . .\n";
+							atm.updateUser();
+							break;
+						case 2:
+							std::cout << "Δώσε ποσό ανάληψης: "; std::cin >> value;
+							std::cin.get();
+							if(atm.withdrawal(value))
+								std::cout << "Η ανάληψη ολοκληρώθηκε με επιτυχία.\n";
+							else std::cout << "Μη αποδεκτή ανάληψη. . .\n";
+							atm.updateUser();
+							break;
+						case 3:
+							atm.transfer();
+							atm.updateUser();
+							break;
+						case 4:
+							atm.transactions();
+							break;
+						case 5:
+							atm.userInfo();
+							break;
+					}
+				}while(userAction != 7);
+					break;
 			case 2:
 				atm.createAccount();
 				break;

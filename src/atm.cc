@@ -5,14 +5,14 @@ atmdecl::ATM::ATM(){
 	system("chcp 65001 > nul"); //Utf-8 encoding for console output
 	this->tries = 3;
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
+	this->LOG_FP.open(LOG_FILE, std::ios::app);
 }
 
 atmdecl::ATM::~ATM(){
-	/*Close file at the termination of the program*/
-	if(this->membersDatFile.is_open()){
-		std::cout << "FILE CLOSED. . ." << std::endl;
+	/*Close files at the termination of the program*/
+	if(this->membersDatFile.is_open())
 		this->membersDatFile.close();
-	}
+	this->LOG_FP.close();
 }
 
 atmdecl::User::User(){
@@ -61,19 +61,15 @@ bool atmdecl::ATM::setUser(){
 			if it's equal we store the info of the current user to our user obj (currentUser) and we return true.
 			else we return false.
 		*/
-		// std::cout << "TOKEN: " << token << std::endl;
 		getline(this->membersDatFile, tempToken, ' ');
 		getline(this->membersDatFile, tempPin, ' ');
 		getline(this->membersDatFile, tempName, ' ');
 		getline(this->membersDatFile, tempBalance);
-		// std::cout << "TOKEN(TMP): " << tempToken << std::endl;
 		if(tempToken == token){
 			this->currentUser.setToken(token);
 			this->currentUser.setPassword(tempPin);
 			this->currentUser.setName(tempName);
 			this->currentUser.setBalance(tempBalance);
-			// this->currentUser.printALL();
-			std::cout << "SUCCESS\n";
 			this->membersDatFile.seekg(0, std::ios::beg);
 			return true;
 		}
@@ -98,7 +94,7 @@ bool atmdecl::ATM::createAccount(){
 	this->currentUser.setToken(temp);
 	this->membersDatFile << temp << ' ';
 	std::cin.get();
-	std::cout << "Δώσε Δώσε PIN: "; std::cin >> temp;
+	std::cout << "Δώσε PIN: "; std::cin >> temp;
 	this->currentUser.setName(temp);
 	this->membersDatFile << temp << ' ';
 	std::cin.get();
@@ -110,7 +106,7 @@ bool atmdecl::ATM::createAccount(){
 	this->currentUser.setBalance(temp);
 	std::cin.get();
 	this->membersDatFile << temp << '\n';
-	std::cout << "SUCCESS\n";
+	std::cout << "Ο λογαριασμός δημιουργήθηκε με επιτυχία.\n";
 	this->membersDatFile.close();
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
 	return true;
@@ -125,7 +121,7 @@ void atmdecl::ATM::userMenu(){
 	std::string downEdge = "\u2517";
 	std::string downEdge2 = "\u251B";
 
-	std::cout << std::setw(129)<< "Δημιουργία Λογαριασμού" << '\n';
+	std::cout << std::setw(109)<< "Menu χρήστη" << '\n';
 	std::cout << std::setw(80) << upEdge;
 	for(int i = 0; i < 38; i++)
 		std::cout << line;
@@ -145,6 +141,7 @@ void atmdecl::ATM::userMenu(){
 
 bool atmdecl::ATM::transfer(){
 	double value;
+	bool found = false;
 	std::string transferToken, temp;
 	std::ifstream rfp(BANK_DAT_FILE, std::ios::in);
 	std::ofstream wfp("temp.txt", std::ios::out);
@@ -167,6 +164,7 @@ bool atmdecl::ATM::transfer(){
 		getline(rfp, temp, ' ');
 		wfp << temp << ' ';
 		if(temp == transferToken){
+			found = true;
 			getline(rfp, temp, ' ');
 			wfp << temp << ' ';
 			getline(rfp, temp, ' ');
@@ -174,6 +172,7 @@ bool atmdecl::ATM::transfer(){
 			getline(rfp, temp);
 			wfp << std::fixed << std::setprecision(2) << (std::stod(temp) + value) << '\n';
 			this->currentUser.setBalance(this->currentUser.getBalance() - value);
+			this->LOG_FP << this->currentUser.getToken() << " Μεταφορά στον λογαριασμό: " << transferToken << " το ποσό -> " << value << std::endl;
 		}
 		else{
 			getline(rfp, temp, ' ');
@@ -194,7 +193,7 @@ bool atmdecl::ATM::transfer(){
 	}
 	rfp.close();
 	wfp.close();
-	return true;
+	return found;
 }
 
 void atmdecl::ATM::updateUser(){
@@ -248,4 +247,49 @@ void atmdecl::ATM::updateUser(){
 	}
 	rfp.close();
 	wfp.close();
+}
+
+void atmdecl::ATM::transactions(){
+	unsigned short count = 5;
+	std::string line, token = this->currentUser.getToken();
+	std::vector<std::string> lines;
+	std::ifstream rfp(LOG_FILE, std::ios::out);
+	
+	if(!rfp.is_open()){
+		std::cerr << "Δεν βρέθηκαν συναλλαγές. . .\n";
+		return;
+	}
+
+	while(rfp.peek() != EOF){
+		getline(rfp, line);
+		if(token == line.substr(0, line.find(' ')))
+			lines.push_back(line);
+	}
+	rfp.close();
+	std::reverse(lines.begin(), lines.end());
+	for(size_t i = 0; i < count && i < lines.size(); i++)
+		std::cout << "Συναλλαγή: " << lines[i] << std::endl;
+}
+
+void atmdecl::ATM::userInfo(){
+		/*Menu for the start of the program*/
+	std::string upEdge = "\u250F";
+	std::string line = "\u2501";
+	std::string upEdge2 = "\u2513";
+	std::string side = "\u2503";
+	std::string downEdge = "\u2517";
+	std::string downEdge2 = "\u251B";
+	std::string name = this->currentUser.getName();
+
+	std::cout << std::setw(120)<< "Πληροφορίες χρήστη" << '\n';
+	std::cout << std::setw(80) << upEdge;
+	for(int i = 0; i < 38; i++)
+		std::cout << line;
+	std::cout << upEdge2 << '\n';
+	std::cout << std::setw(80) << side << "[Ονομα χρήστη]: " << std::setw(22) << name << side << '\n';
+	std::cout << std::setw(80) << side << "[Υπόλοιπο    ]: " << std::setw(22) << this->currentUser.getBalance() << side << '\n';
+	std::cout << std::setw(80) << downEdge;
+	for(int i = 0; i < 38; i++)
+		std::cout << line;
+	std::cout << downEdge2 << std::endl;
 }
