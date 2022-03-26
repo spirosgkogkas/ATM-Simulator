@@ -13,15 +13,14 @@
 		public:
 			User();
 			~User();
-			printMenu(); // -----------------------------
 			std::string getPassword()const{return this->password;}
 			void setToken(std::string token){this->accountNumber = token;}
 			void setName(std::string name){this->name = name;}
 			void setPassword(std::string pw){this->password = pw;}
 			void setBalance(std::string balance){this->balance = std::stod(balance);}
-			void printALL(){
-				std::cout << name << ":" << password << ":" << accountNumber << ":" << balance;
-			}
+			void setBalance(double balance){this->balance = balance;}
+			double getBalance()const{return this->balance;}
+			std::string getToken()const{return this->accountNumber;}
 		private:
 			std::string name;
 			std::string password;
@@ -33,16 +32,35 @@
 		public:
 			ATM();
 			~ATM();
-			// void setTries(){this->tries > 0 ? this->tries-- : std::cerr << "0 προσπάθειες. . ." std::endl;};
+			void setTries(){this->tries ? this->tries-- : 0;};
 			unsigned short int getTries()const{return this->tries;}
 			bool validatePassword(std::string pw)const{return this->currentUser.getPassword() == pw;}
-			bool setUser(std::string token);
+			bool setUser();
 			bool createAccount();
-			void printMenu();
+			void atmMenu();
+			void userMenu();
+			bool transfer();
+			void updateUser();
+			void clearScreen(){
+				#ifdef _WIN32
+					system("pause && cls");
+				#endif
+			}
+			bool deposit(double value){
+				if(value > 0){
+					this->currentUser.setBalance(this->currentUser.getBalance() + value);
+					return true;
+				}return false;}
+			bool withdrawal(double value){
+				if((this->currentUser.getBalance() - value) < 0)
+					return false;
+				this->currentUser.setBalance(this->currentUser.getBalance() - value);
+				return true;
+			}
 		private:
 			unsigned short int tries;
 			atmdecl::User currentUser;
-			std::fstream membersDatFile(BANK_DAT_FILE, std::ios::in);
+			std::fstream membersDatFile;
 		};	
 	}
 #endif
