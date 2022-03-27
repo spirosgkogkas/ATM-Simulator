@@ -4,14 +4,15 @@
 /*Guard Macro*/
 #ifndef ATM_DECL
 	#include <iostream>
+	#include <cstdio>
 	#include <fstream>
 	#include <iomanip>
 	#include <string>
 	#include <algorithm>
 	#include <vector>
 	#define ATM_DECL
-	#define BANK_DAT_FILE "..\\test.txt"
-	#define LOG_FILE "log.dat"
+	#define BANK_DAT_FILE "..\\bank.dat"
+	#define LOG_FILE "..\\log.dat"
 	namespace atmdecl{
 		class User{
 		public:
@@ -40,7 +41,7 @@
 			void setTries(){this->tries ? this->tries-- : 0;};
 			unsigned short int getTries()const{return this->tries;}
 			bool validatePassword(std::string pw)const{return this->currentUser.getPassword() == pw;}
-			bool setUser();
+			bool setUser(std::string token);
 			bool createAccount();
 			void atmMenu();
 			void userMenu();
@@ -48,9 +49,10 @@
 			void updateUser();
 			void transactions();
 			void userInfo();
+			bool changePassword();
 			void clearScreen(){
 				#ifdef _WIN32
-					system("pause && cls");
+					system("cls");
 				#endif
 			}
 			bool deposit(double value){

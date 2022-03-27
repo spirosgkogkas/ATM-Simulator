@@ -15,10 +15,15 @@ int main(int argc, char const *argv[])
 				choice2 = 0;
 				break;
 			case 1:
-				bool signIn;
-				while(!(signIn = atm.setUser())){
-					std::cout << "Λάθος κωδικός. . .\n";
+				while(true){
+					std::cout << "Παρακαλώ πληκτρολογήστε τον κωδικό λογαριασμού (Πάτησε Q/q για έξοδο): "; std::cin >> token;
+					std::cin.get();
+					if(token == "q" || token == "Q") break;
+					if(!atm.setUser(token))
+						std::cout << "Μη αποδεκτός κωδικός λογαριασμού. . .\n";
+					else break;
 				}
+				if(token == "q" || token == "Q") break;
 				do{
 					std::cout << "Δώσε PIN: "; std::cin >> pin;
 					std::cin.get();
@@ -27,9 +32,12 @@ int main(int argc, char const *argv[])
 						atm.setTries();
 						atm.getTries() > 0 ? std::cout << "Απομένουν " << atm.getTries() << " προσπάθειες" << std::endl \
 						: std::cout << "Κλείδωμα λογαριασμού. . ." << std::endl;
+						std::cout << "Πάτησε enter για να συνεχίσεις. . .";
+						std::cin.ignore();
 						atm.clearScreen();
 					}
 					else{
+						atm.clearScreen();
 						std::cout << "Επιτυχής σύνδεση.\n";
 						break;
 					}
@@ -43,36 +51,60 @@ int main(int argc, char const *argv[])
 					atm.userMenu();
 					std::cout << "Δώσε επιλογή: "; std::cin >> userAction;
 					std::cin.get();
+					atm.clearScreen();
 					switch(userAction){
 						case 1:
-							std::cout << "Δώσε ποσό κατάθεσης: "; std::cin >> value;
+							std::cout << "Δώσε ποσό κατάθεσης (0 για ακύρωση): "; std::cin >> value;
 							std::cin.get();
+							atm.clearScreen();
+							if(!value) break;
 							if(atm.deposit(value))
 								std::cout << "Η κατάθεση ολοκληρώθηκε με επιτυχία.\n";
 							else std::cout << "Μη αποδεκτή κατάθεση. . .\n";
 							atm.updateUser();
 							break;
 						case 2:
-							std::cout << "Δώσε ποσό ανάληψης: "; std::cin >> value;
-							std::cin.get();
-							if(atm.withdrawal(value))
-								std::cout << "Η ανάληψη ολοκληρώθηκε με επιτυχία.\n";
-							else std::cout << "Μη αποδεκτή ανάληψη. . .\n";
-							atm.updateUser();
+							do{
+								std::cout << "Δώσε ποσό ανάληψης (0 για ακύρωση): "; std::cin >> value;
+								std::cin.get();
+								atm.clearScreen();
+								if(!value) break;
+								if(atm.withdrawal(value))
+									std::cout << "Η ανάληψη ολοκληρώθηκε με επιτυχία.\n";
+								else std::cout << "Μη αποδεκτή ανάληψη. . .\n";
+								atm.updateUser();
+							}while(!atm.withdrawal(value));
 							break;
 						case 3:
-							atm.transfer();
-							atm.updateUser();
+							if(atm.transfer()){
+								std::cout << "Επιτυχής μεταφορά." << std::endl;
+								atm.updateUser();
+							}
+							else
+								std::cout << "Η μεταφορά δεν ολοκληρώθηκε. . ." << std::endl;
+							std::cout << "Πάτησε enter για να συνεχίσεις. . .";
+							std::cin.ignore();
+							atm.clearScreen();
 							break;
 						case 4:
 							atm.transactions();
+							std::cout << "Πάτησε enter για να συνεχίσεις. . .";
+							std::cin.ignore();
+							atm.clearScreen();
 							break;
 						case 5:
 							atm.userInfo();
+							std::cout << "Πάτησε enter για να συνεχίσεις. . .";
+							std::cin.ignore();
+							atm.clearScreen();
+							break;
+						case 6:
+							atm.changePassword();
 							break;
 					}
 				}while(userAction != 7);
-					break;
+				atm.clearScreen();
+				break;
 			case 2:
 				atm.createAccount();
 				break;
