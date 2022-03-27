@@ -38,7 +38,7 @@
 		public:
 			ATM();
 			~ATM();
-			void setTries(){this->tries ? this->tries-- : 0;};
+			void setTries(int value){this->tries = value;};
 			unsigned short int getTries()const{return this->tries;}
 			bool validatePassword(std::string pw)const{return this->currentUser.getPassword() == pw;}
 			bool setUser(std::string token);

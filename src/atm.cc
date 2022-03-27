@@ -154,12 +154,13 @@ void atmdecl::ATM::userMenu(){
 }
 
 bool atmdecl::ATM::transfer(){
+	/*Μεταφορά απο λογαριασμό σε λογαριασμό*/
 	std::string transferToken, temp;
 	std::ifstream rfp(BANK_DAT_FILE, std::ios::in);
 	std::ofstream wfp("temp.dat", std::ios::out);
 	double value;
 	bool found = false;
-
+	/*Ανοίγουμε 2 αρχεία, 1 για ανάγνωση και 1 για τα ανανεωμένα δεδομένα μας*/
 	if(!rfp.is_open()){
 		std::cerr << "Πρόβλημα κατά την ανάγνωση δεδομένων. . .\n";
 		return false;
@@ -171,11 +172,14 @@ bool atmdecl::ATM::transfer(){
 		std::cout << "Υπόλοιπο: " << this->currentUser.getBalance() << '\n';
 		std::cout << "Παρακαλώ πληκτρολογήστε ποσό μεταφοράς (0 για ακύρωση): "; std::cin >> value;
 		std::cin.get();
+		/*Ελεγχος σε περιπτωση ακύρωσης*/
 		if(!value) return false;
+		/*Ελεγχος σε περίπτωση μη επιτρεπτού ποσού.*/
 		if(value > this->currentUser.getBalance())
 			std::cerr << "Μη αποδεκτό ποσό μεταφοράς. . .\n";
 	}while(value > this->currentUser.getBalance());
 
+	/*Διαβασμα και επεξεργασία δεδομένων*/
 	while(rfp.peek() != EOF){
 		getline(rfp, temp, ' ');
 		wfp << temp << ' ';
@@ -201,8 +205,18 @@ bool atmdecl::ATM::transfer(){
 	}
 	rfp.close();
 	wfp.close();
+
 	rfp.open("temp.dat", std::ios::in);
+	if(!rfp.is_open()){
+		std::cerr << "Παρουσιάστηκε πρόβλημα, επικοινωνηστε με τον διαχειριστή. . .\n";
+		exit(0);
+	}
+
 	wfp.open(BANK_DAT_FILE, std::ios::out);
+	if(!wfp.is_open()){
+		std::cerr << "Παρουσιάστηκε πρόβλημα, επικοινωνηστε με τον διαχειριστή. . .\n";
+		exit(0);
+	}
 	while(rfp.peek() != EOF){
 		getline(rfp, temp);
 		wfp << temp << '\n';

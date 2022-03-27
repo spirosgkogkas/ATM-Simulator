@@ -29,7 +29,7 @@ int main(int argc, char const *argv[])
 					std::cin.get();
 					if(!atm.validatePassword(pin)){
 						std::cout << "Λάθος PIN. . .\n";
-						atm.setTries();
+						atm.setTries(atm.getTries() - 1);
 						atm.getTries() > 0 ? std::cout << "Απομένουν " << atm.getTries() << " προσπάθειες" << std::endl \
 						: std::cout << "Κλείδωμα λογαριασμού. . ." << std::endl;
 						std::cout << "Πάτησε enter για να συνεχίσεις. . .";
@@ -38,6 +38,7 @@ int main(int argc, char const *argv[])
 					}
 					else{
 						atm.clearScreen();
+						atm.setTries(3);
 						std::cout << "Επιτυχής σύνδεση.\n";
 						break;
 					}
@@ -103,6 +104,7 @@ int main(int argc, char const *argv[])
 							break;
 					}
 				}while(userAction != 7);
+
 				atm.clearScreen();
 				break;
 			case 2:
