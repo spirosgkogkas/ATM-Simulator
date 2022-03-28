@@ -1,7 +1,13 @@
-#include "..\Lib\atm.hpp"
+#ifdef _WIN32
+	#include "..\Lib\atm.hpp"
+#else
+	#include "../Lib/atm.hpp"
+#endif
 
 atmdecl::ATM::ATM(){
-	system("chcp 65001 > nul"); //Utf-8 encoding
+	#ifdef _WIN32
+		system("chcp 65001 > nul"); //Utf-8 encoding
+	#endif
 	this->tries = 3;
 	/*Άνοιγμα του αρχείου bank.dat σε read mode */
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
@@ -93,18 +99,27 @@ bool atmdecl::ATM::setUser(std::string token){
 }
 
 bool atmdecl::ATM::createAccount(){
-	std::string temp;
+	std::string temp, temp2;
 	/*Δημιουργία χρήστη.*/
+	std::cout << "Δώσε αριθμό λογαριασμού: "; std::cin >> temp;
 	if(this->membersDatFile.is_open()){
-		std::cout << "CLOSED FILE" << std::endl;
+		/*Έλεγχος για το αν ο χρήστης υπάρχει ήδη*/
+		while(this->membersDatFile.peek() != EOF){
+			getline(this->membersDatFile, temp2);
+			if(temp == temp2.substr(0, temp2.find(' '))){
+				std::cout << "Ο λογαριασμός υπάρχει ήδη . ." << std::endl;
+				return false;
+			}
+		}
 		this->membersDatFile.close();
 	}
+	
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::app);
 	if(!this->membersDatFile.is_open()){
 		std::cerr << "Πρόβλημα κατα την δημιουργία λογαριασμού. . .\n";
 		return false;
 	}
-	std::cout << "Δώσε αριθμό λογαριασμού: "; std::cin >> temp;
+	
 	this->currentUser.setToken(temp);
 	this->membersDatFile << temp << ' ';
 	std::cin.get();
@@ -168,6 +183,11 @@ bool atmdecl::ATM::transfer(){
 	std::cout << "Παρακαλώ πληκτρολογήστε τον κωδικό λογαριασμού μεταφοράς (Q/q για ακύρωση): "; std::cin >> transferToken;
 	std::cin.get();
 	if(transferToken == "Q" || transferToken == "q") return false;
+	else if(transferToken == this->currentUser.getToken()){
+		std::cerr << "Μη αποδεκτή ενέργεια. . ." << std::endl;
+		return false;
+	}
+
 	do{
 		std::cout << "Υπόλοιπο: " << this->currentUser.getBalance() << '\n';
 		std::cout << "Παρακαλώ πληκτρολογήστε ποσό μεταφοράς (0 για ακύρωση): "; std::cin >> value;
@@ -227,6 +247,7 @@ bool atmdecl::ATM::transfer(){
 }
 
 void atmdecl::ATM::updateUser(){
+	/*Update User*/
 	std::string line;
 	std::ifstream rfp(BANK_DAT_FILE, std::ios::in);
 	std::ofstream wfp("temp.dat", std::ios::out);
@@ -283,6 +304,7 @@ void atmdecl::ATM::updateUser(){
 }
 
 void atmdecl::ATM::transactions(){
+	/*Συναλλαγές.*/
 	unsigned short count = 5;
 	std::string line, token = this->currentUser.getToken();
 	std::vector<std::string> lines;
@@ -309,7 +331,7 @@ void atmdecl::ATM::transactions(){
 }
 
 void atmdecl::ATM::userInfo(){
-		/*Menu for the start of the program*/
+	/*Πληροφορίες χρήστη.*/
 	std::string upEdge = "\u250F";
 	std::string line = "\u2501";
 	std::string upEdge2 = "\u2513";
@@ -332,6 +354,7 @@ void atmdecl::ATM::userInfo(){
 }
 
 bool atmdecl::ATM::changePassword(){
+	/*Αλλαγή ΠΙΝ χρήστη.*/
 	std::string line, password;
 	std::ifstream rfp(BANK_DAT_FILE, std::ios::in);
 	std::ofstream wfp("temp.dat", std::ios::out);
@@ -345,7 +368,7 @@ bool atmdecl::ATM::changePassword(){
 	}
 	std::cout << "Δώσε καινούργιο PIN (Q/q για ακύρωση): "; std::cin >> password;
 	std::cin.get();
-	if(password[0] == 'Q' || password[0] == 'q') return false;
+	if(password == "Q" || password == "q") return false;
 	while(rfp.peek() != EOF){
 		getline(rfp, line, ' ');
 		wfp << line << ' ';

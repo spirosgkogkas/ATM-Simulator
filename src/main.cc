@@ -1,4 +1,8 @@
-#include "..\Lib\atm.hpp"
+#ifdef _WIN32
+	#include "..\Lib\atm.hpp"
+#else
+	#include "../Lib/atm.hpp"
+#endif
 
 int main(int argc, char const *argv[])
 {
@@ -100,7 +104,10 @@ int main(int argc, char const *argv[])
 							atm.clearScreen();
 							break;
 						case 6:
-							atm.changePassword();
+							if(atm.changePassword())
+								std::cout << "Επιτυχής αλλαγή PIN." << std::endl;
+							else
+								std::cout << "Το PIN δεν άλλαξε." << std::endl;
 							break;
 					}
 				}while(userAction != 7);

@@ -11,8 +11,13 @@
 	#include <algorithm>
 	#include <vector>
 	#define ATM_DECL
-	#define BANK_DAT_FILE "..\\bank.dat"
-	#define LOG_FILE "..\\log.dat"
+	#ifdef _WIN32
+		#define BANK_DAT_FILE "..\\bank.dat"
+		#define LOG_FILE "..\\log.dat"
+	#else
+		#define BANK_DAT_FILE "../bank.dat"
+		#define LOG_FILE "../log.dat"
+	#endif
 	namespace atmdecl{
 		class User{
 		public:
@@ -53,6 +58,8 @@
 			void clearScreen(){
 				#ifdef _WIN32
 					system("cls");
+				#else
+					system("clear");
 				#endif
 			}
 			bool deposit(double value){
