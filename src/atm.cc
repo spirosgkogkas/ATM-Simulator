@@ -1,8 +1,4 @@
-#ifdef _WIN32
-	#include "..\Lib\atm.hpp"
-#else
-	#include "../Lib/atm.hpp"
-#endif
+#include "../Lib/atm.hpp"
 
 atmdecl::ATM::ATM(){
 	#ifdef _WIN32
@@ -346,7 +342,7 @@ void atmdecl::ATM::userInfo(){
 		std::cout << line;
 	std::cout << upEdge2 << '\n';
 	std::cout << std::setw(80) << side << "[Ονομα χρήστη]: " << std::setw(22) << name << side << '\n';
-	std::cout << std::setw(80) << side << "[Υπόλοιπο    ]: " << std::setw(22) << this->currentUser.getBalance() << side << '\n';
+	std::cout << std::setw(80) << side << "[Υπόλοιπο    ]: " << std::setw(22) << std::fixed << std::setprecision(2) << this->currentUser.getBalance() << side << '\n';
 	std::cout << std::setw(80) << downEdge;
 	for(int i = 0; i < 38; i++)
 		std::cout << line;

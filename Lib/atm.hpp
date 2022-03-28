@@ -11,13 +11,8 @@
 	#include <algorithm>
 	#include <vector>
 	#define ATM_DECL
-	#ifdef _WIN32
-		#define BANK_DAT_FILE "..\\bank.dat"
-		#define LOG_FILE "..\\log.dat"
-	#else
-		#define BANK_DAT_FILE "../bank.dat"
-		#define LOG_FILE "../log.dat"
-	#endif
+	#define BANK_DAT_FILE "../bank.dat"
+	#define LOG_FILE "../log.dat"
 	namespace atmdecl{
 		class User{
 		public:

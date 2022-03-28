@@ -1,8 +1,4 @@
-#ifdef _WIN32
-	#include "..\Lib\atm.hpp"
-#else
-	#include "../Lib/atm.hpp"
-#endif
+#include "../Lib/atm.hpp"
 
 int main(int argc, char const *argv[])
 {
