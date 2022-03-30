@@ -3,6 +3,7 @@
 int main(int argc, char const *argv[])
 {
 	int choice, choice2 = 1;
+	bool withdawalState = false;
 	double value;
 	std::string token, pin;
 	atmdecl::ATM atm;
@@ -70,11 +71,13 @@ int main(int argc, char const *argv[])
 								std::cin.get();
 								atm.clearScreen();
 								if(!value) break;
-								if(atm.withdrawal(value))
+								if(atm.withdrawal(value)){
 									std::cout << "Η ανάληψη ολοκληρώθηκε με επιτυχία.\n";
+									withdawalState = true;
+								}
 								else std::cout << "Μη αποδεκτή ανάληψη. . .\n";
 								atm.updateUser();
-							}while(!atm.withdrawal(value));
+							}while(!withdawalState);
 							break;
 						case 3:
 							if(atm.transfer()){
