@@ -5,11 +5,12 @@ int main(int argc, char const *argv[])
 	int choice, choice2 = 1;
 	bool withdawalState = false;
 	double value;
+	
 	std::string token, pin;
 	atmdecl::ATM atm;
 	do{
 		atm.atmMenu();
-		std::cout << "Δώσε επιλογή: "; std::cin >> choice;
+		std::cout << "Enter Choice: "; std::cin >> choice;
 		std::cin.get();
 		switch(choice){
 			case 0:
@@ -17,107 +18,114 @@ int main(int argc, char const *argv[])
 				break;
 			case 1:
 				while(true){
-					std::cout << "Παρακαλώ πληκτρολογήστε τον κωδικό λογαριασμού (Πάτησε Q/q για έξοδο): "; std::cin >> token;
+					std::cout << "Please enter your Bank-ID(Enter Q or q to quit): "; std::cin >> token;
 					std::cin.get();
+					atm.clearScreen();
 					if(token == "q" || token == "Q") break;
-					if(!atm.setUser(token))
-						std::cout << "Μη αποδεκτός κωδικός λογαριασμού. . .\n";
+					if(!atm.setUser(token)){
+						std::cout << "Invalid Bank-ID. . .\n";
+						std::cin.get();
+						atm.clearScreen();
+					}
 					else break;
 				}
 				if(token == "q" || token == "Q") break;
 				do{
-					std::cout << "Δώσε PIN: "; std::cin >> pin;
+					std::cout << "Enter PIN: "; std::cin >> pin;
 					std::cin.get();
 					if(!atm.validatePassword(pin)){
-						std::cout << "Λάθος PIN. . .\n";
+						std::cout << "Invalid PIN. . .\n";
 						atm.setTries(atm.getTries() - 1);
-						atm.getTries() > 0 ? std::cout << "Απομένουν " << atm.getTries() << " προσπάθειες" << std::endl \
-						: std::cout << "Κλείδωμα λογαριασμού. . ." << std::endl;
-						std::cout << "Πάτησε enter για να συνεχίσεις. . .";
+						atm.getTries() > 0 ? std::cout << "Tries left " << atm.getTries() << std::endl \
+						: std::cout << "Your account got suspended. . ." << std::endl;
+						std::cout << "Press enter to continue. . .";
 						std::cin.ignore();
 						atm.clearScreen();
 					}
 					else{
 						atm.clearScreen();
 						atm.setTries(3);
-						std::cout << "Επιτυχής σύνδεση.\n";
+						std::cout << "Successfully connected.\n";
 						break;
 					}
 					if(!atm.getTries()){
-						std::cout << "Εξοδος προγράμματος. . ." << std::endl;
+						std::cout << "Exit program. . ." << std::endl;
 						exit(0);
 					}
 				}while(atm.getTries());
 				int userAction;
 				do{
 					atm.userMenu();
-					std::cout << "Δώσε επιλογή: "; std::cin >> userAction;
+					std::cout << "Enter choice: "; std::cin >> userAction;
 					std::cin.get();
 					atm.clearScreen();
 					switch(userAction){
 						case 1:
-							std::cout << "Δώσε ποσό κατάθεσης (0 για ακύρωση): "; std::cin >> value;
+							std::cout << "How much would you like to deposit (0 to cancel)?: "; std::cin >> value;
 							std::cin.get();
 							atm.clearScreen();
 							if(!value) break;
 							if(atm.deposit(value))
-								std::cout << "Η κατάθεση ολοκληρώθηκε με επιτυχία.\n";
-							else std::cout << "Μη αποδεκτή κατάθεση. . .\n";
+								std::cout << "Deposit completed successfully.\n";
+							else std::cout << "Your balance is insufficient to make the deposit.\n";
 							atm.updateUser();
 							break;
 						case 2:
 							do{
-								std::cout << "Δώσε ποσό ανάληψης (0 για ακύρωση): "; std::cin >> value;
+								std::cout << "Enter withdrawal amount (0 to cancel): "; std::cin >> value;
 								std::cin.get();
 								atm.clearScreen();
 								if(!value) break;
 								if(atm.withdrawal(value)){
-									std::cout << "Η ανάληψη ολοκληρώθηκε με επιτυχία.\n";
+									std::cout << "Withdrawal completed successfully.\n";
 									withdawalState = true;
 								}
-								else std::cout << "Μη αποδεκτή ανάληψη. . .\n";
+								else std::cout << "The amount of your withdrawal is greater than the balance of your account.\nTry again...\n";
 								atm.updateUser();
 							}while(!withdawalState);
 							break;
 						case 3:
 							if(atm.transfer()){
-								std::cout << "Επιτυχής μεταφορά." << std::endl;
+								std::cout << "Successfully transfer." << std::endl;
 								atm.updateUser();
 							}
 							else
-								std::cout << "Η μεταφορά δεν ολοκληρώθηκε. . ." << std::endl;
-							std::cout << "Πάτησε enter για να συνεχίσεις. . .";
+								std::cout << "There was an error with your transfer. . ." << std::endl;
+							std::cout << "Please press enter to continue. . .";
 							std::cin.ignore();
 							atm.clearScreen();
 							break;
 						case 4:
 							atm.transactions();
-							std::cout << "Πάτησε enter για να συνεχίσεις. . .";
+							std::cout << "Please press enter to continue. . .";
 							std::cin.ignore();
 							atm.clearScreen();
 							break;
 						case 5:
 							atm.userInfo();
-							std::cout << "Πάτησε enter για να συνεχίσεις. . .";
+							std::cout << "Please press enter to continue. . .";
 							std::cin.ignore();
 							atm.clearScreen();
 							break;
 						case 6:
 							if(atm.changePassword())
-								std::cout << "Επιτυχής αλλαγή PIN." << std::endl;
+								std::cout << "Pin successfully changed." << std::endl;
 							else
-								std::cout << "Το PIN δεν άλλαξε." << std::endl;
+								std::cout << "There was an error while changing your PIN. . ." << std::endl;
 							break;
 					}
 				}while(userAction != 7);
-
 				atm.clearScreen();
 				break;
 			case 2:
 				atm.createAccount();
+				std::cin.get();
+				atm.clearScreen();
 				break;
 			default:
-				std::cout << "Λάθος επιλογή. . .\n";
+				std::cout << "Invalid choice. . .\n";
+				std::cin.get();
+				atm.clearScreen();
 		}
 	}while(choice2);
 	return 0;

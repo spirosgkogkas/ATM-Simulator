@@ -10,6 +10,9 @@
 	#include <string>
 	#include <algorithm>
 	#include <vector>
+	#ifdef _WIN32
+		#include <windows.h>
+	#endif
 	#define ATM_DECL
 	#define BANK_DAT_FILE "../bank.dat"
 	#define LOG_FILE "../log.dat"
@@ -60,14 +63,14 @@
 			bool deposit(double value){
 				if(value > 0){
 					this->currentUser.setBalance(this->currentUser.getBalance() + value);
-					this->LOG_FP << this->currentUser.getToken() << " Κατάθεση ποσού: " << value << std::endl;
+					this->LOG_FP << this->currentUser.getToken() << " Deposit amount: " << value << std::endl;
 					return true;
 				}return false;}
 			bool withdrawal(double value){
 				if((this->currentUser.getBalance() - value) < 0)
 					return false;
 				this->currentUser.setBalance(this->currentUser.getBalance() - value);
-				this->LOG_FP << this->currentUser.getToken() << " Ανάληψη ποσού: " << value << std::endl;
+				this->LOG_FP << this->currentUser.getToken() << " Withdrawal amount: " << value << std::endl;
 				return true;
 			}
 		private:
