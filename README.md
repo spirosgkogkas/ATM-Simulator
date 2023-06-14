@@ -1,14 +1,16 @@
-#----------------Setup Information------------------#
+#Setup Information
 
 *For Windows Setup*
+
 Download the ATM-Simulator.exe
 
 *For Linux Users*
+
 Run make and then make clean.
 the executable will be in bin folder.
 Example: make && make clean
 
-#----------------Program Information----------------
+#Program Information
 
 Initial Menu:
 
