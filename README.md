@@ -15,7 +15,9 @@ Example: make && make clean
 **ATM Menu**
 
 0: Exit
+
 1: Log in
+
 2: Register
 
 During the creation of an account, we cannot create
