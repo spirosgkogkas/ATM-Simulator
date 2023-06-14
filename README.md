@@ -1,4 +1,4 @@
-#Setup Information
+# Setup Information
 
 *For Windows Setup*
 
@@ -10,7 +10,7 @@ Run make and then make clean.
 the executable will be in bin folder.
 Example: make && make clean
 
-#Program Information
+# Program Information
 
 Initial Menu:
 
