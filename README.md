@@ -12,14 +12,16 @@ Example: make && make clean
 
 # Program Information
 
-Initial Menu:
+**ATM Menu**
 
 0: Exit
 1: Log in
-2: Create an account
+2: Register
 
 During the creation of an account, we cannot create
 an account that already exists.
+
+**User Menu**
 
 1: Deposit
 The user has the option to cancel the transaction.
