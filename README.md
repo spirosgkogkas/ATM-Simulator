@@ -1,4 +1,5 @@
-#----------------Setup Information------------------
+#----------------Setup Information------------------#
+
 *For Windows Setup*
 Download the ATM-Simulator.exe
 
