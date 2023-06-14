@@ -2,10 +2,10 @@ CC = g++
 
 OBJECTS = ./build/atm.o ./build/main.o
 
-all: create_build bin/main
+all: create_folders bin/main
 
-create_build:
-	mkdir -p build
+create_folders:
+	mkdir -p build bin
 
 bin/main: $(OBJECTS)
 	$(CC) $(OBJECTS) -o ./bin/main -I ./Lib

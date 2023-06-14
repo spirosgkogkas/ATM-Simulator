@@ -1,47 +1,44 @@
-Ο Συγκεκριμένος κώδικας είναι portable.
+#----------------Setup Information------------------
+*For Windows Setup*
+Download the ATM-Simulator.exe
 
-Στον φάκελο bin υπάρχουν 2 προγράμματα το ένα για windows
-και το άλλο για linux.
+*For Linux Users*
+Run make and then make clean.
+the executable will be in bin folder.
+Example: make && make clean
 
-Ο πηγαίος κώδικας βρίσκεται στο src folder.
+#----------------Program Information----------------
 
-Ο φάκελος Lib περιέχει βιβλιοθήκες.
+Initial Menu:
 
-Το αρχείο bank.dat αποθηκεύει λογαριασμους.
-Το αρχείο log.dat αποθηκεύει συναλλαγές.
+0: Exit
+1: Log in
+2: Create an account
 
-~Πληροφορίες Προγράμματος~
+During the creation of an account, we cannot create
+an account that already exists.
 
-Αρχίκο Menu:
+1: Deposit
+The user has the option to cancel the transaction.
 
-0: Έξοδος
-1: Είσοδος
-2: Δημιουργία λογαριασμού
+2: Withdrawal
+The user has the option to cancel the transaction
+and is not allowed to withdraw more money than they already have.
 
-Κατα την δημιουργία ενός λογαριασμού δεν μπορούμε να δημιουργήσουμε
-εναν λογαριασμό που υπάρχει ηδη.
+3: Transfer
+Transfer money from the current account to another if it exists.
+If the user enters the current account as an option,
+it informs them and rejects the transaction.
 
-1:Κατάθεση
-Ο χρήστης έχει την δυνατότητα να ακυρώση την συναλλαγή
+4: Last transactions
+Prints the last 5 transactions (if any), and if
+there are no transactions, it notifies the user.
 
-2:Ανάληψη
-Ο χρήστης έχει την δυνατότητα να ακυρώση την συναλλαγή
-και δεν του επιτρέπετε να σηκώσει παραπάνω χρήματα απο αυτά που έχει ήδη.
+5: Account information
+Prints the user's balance and their name.
 
-3:Μεταφόρα
-Μεταφόρα χρημάτων απο τον τρέχοντα λογαριασμό σε καποιον άλλον αν υπάρχει.
-Σε περίπτωση που ο χρήστης δώσει τον τρέχοντα λογαριασμο ως επιλογή
-τον ενημερώνει και απορίπτει την συναλλαγή.
+6: Change password
+The user has the option to cancel the change.
 
-4:Τελευταίες συναλλαγές
-Τυπώνει τις τελευταίες 5 συναλλαγές (αν υπάρχουν) και σε περίπτωση
-που δεν υπάρχει καμία ενημερώνει τον χρήστη.
-
-5:Πληροφορίες λογαριασμού
-Τυπώνει ποσό χρήστη και το ονομά του.
-
-6:Αλλαγή κωδικού
-Ο χρήστης έχει την δυνατότητα να ακυρώσει την αλλαγή.
-
-7:Εξοδος
-Επιστροφή στο αρχικό menu.
+7: Exit
+Returns to the initial menu.
