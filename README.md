@@ -14,12 +14,11 @@ Run `make && make clean` to compile the source code.
 
 # How the app works
 
+- 0: Exit
 
-0: Exit
++ 1: Log in
 
-1: Log in
-
-2: Register
+* 2: Register
 
 During the creation of an account, we cannot create
 an account that already exists.
