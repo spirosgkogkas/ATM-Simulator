@@ -1,7 +1,7 @@
 # ATM-Simulator
 ATM-Simulator is a computer-based program replicating the basic functionality of an ATM.
 
-# Setup Information
+## Setup Information
 
 *For Windows Setup*
 
@@ -9,13 +9,11 @@ Download the ATM-Simulator.exe
 
 *For Linux Users*
 
-Run make and then make clean.
-the executable will be in bin folder.
-Example: make && make clean
+Run `make && make clean` to compile the source code.
+> The executable will be at bin folder.
 
-# Program Information
+# How the app works
 
-**ATM Menu**
 
 0: Exit
 
