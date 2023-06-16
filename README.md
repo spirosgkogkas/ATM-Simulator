@@ -14,11 +14,11 @@ Run `make && make clean` to compile the source code.
 
 # How the app works
 
-* 0: Exit
-
-* 1: Log in
-
-* 2: Register
+0. Exit
+   * Exit the program.
+1. Log in
+   - To log in you should have a unique bank-ID\n\nwithout
+2. Register
 
 During the creation of an account, we cannot create
 an account that already exists.
