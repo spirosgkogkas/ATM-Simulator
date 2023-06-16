@@ -79,7 +79,6 @@ void atmdecl::ATM::atmMenu(){
 }
 
 bool atmdecl::ATM::setUser(std::string token){
-	/*Προσωρινές μεταβλητές*/
 	std::string tempToken, tempPin, tempName, tempBalance;
 	if(!this->membersDatFile.is_open()){
 		std::cerr << "An error occurred. . .\n";
@@ -116,7 +115,8 @@ bool atmdecl::ATM::setUser(std::string token){
 
 bool atmdecl::ATM::createAccount(){
 	std::string temp, temp2;
-
+	double balance;
+	bool found_character = false;
 	/*Check for existing user*/
 	std::cout << "Please give a Bank-ID: "; std::cin >> temp;
 	if(!this->membersDatFile.is_open()) this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
@@ -149,18 +149,65 @@ bool atmdecl::ATM::createAccount(){
 	this->currentUser.setName(temp);
 	this->membersDatFile << temp << ' ';
 	std::cin.get();
-	std::cout << "Enter Balance: "; std::cin >> temp;
-	this->currentUser.setBalance(temp);
-	std::cin.get();
-	this->membersDatFile << temp << '\n';
-	std::cout << "Account created successfully.\n";
+	while(true){
+		std::cout << "Enter Balance: ";
+		if(!(std::cin >> balance)){
+			/*                                    -User input validation for balance-
+			    +---------------------------------------------------------------------------------------------------------------------+
+				| We check first for the std::cin return value from operation with >> operator                                        |
+				|if the return value is false it means user gave bad input..                                                          |
+				|We clear the state of the std::cin and then clear anything left inside the buffer and the user needs to input again. |
+				+---------------------------------------------------------------------------------------------------------------------+
+                                                        -First check issues-
+				+---------------------------------------------------------------------------------------------------------------------+
+				| There would be a problem though if we used only this approach since the return value would be true if the operation |
+				|could manage to store atleast a value into the balance variable.                                                     |
+				| In Example:                                                                                                         |
+				|	- std::cin > balance -                                                                                            |
+				|	User input: 1#$asd2a                                                                                              |
+				|	Return value: true                                                                                                |
+				|                                                                                                                     |
+				| So we will need to check if there are any characters left inside the buffer and if there are any we will prompt     |
+				|the user again to input the balance..                                                                                |
+				+---------------------------------------------------------------------------------------------------------------------+
+				                                      -Check buffer leftovers-
+				+---------------------------------------------------------------------------------------------------------------------+
+				| The code below reads until it reaches \n character or until it finds a character between 32 and 126                 |
+				|if it finds any it will clear the rest of the buffer and will set the boolean found_character to true to input again.|
+				| In case of not finding any character it will simply break out the loop and continue it's purpose.                   |
+				+---------------------------------------------------------------------------------------------------------------------+
+			*/
+			this->clearScreen();
+			std::cout << "Invalid balance. . .\nTry again. . .\n";
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+		else{
+			int ch;
+			while((ch = std::cin.get()) != '\n'){
+				if(ch >= 32 && ch <= 126){
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');	
+					found_character = true;
+					break;
+				}
+			}
+			if(found_character){
+				std::cout << "Invalid balance. . .\nTry again. . .\n";
+				continue;
+			}
+			break;
+		}
+	}
+	this->currentUser.setBalance(balance);
+	this->membersDatFile << balance << '\n';
+	std::cout << "Account created successfully.";
 	this->membersDatFile.close();
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
 	return true;
 }
 
 void atmdecl::ATM::userMenu(){
-	/*Menu Χρήστη*/
+	/*User Menu*/
 	std::string upEdge = "\u250F";
 	std::string line = "\u2501";
 	std::string upEdge2 = "\u2513";
@@ -200,7 +247,13 @@ bool atmdecl::ATM::transfer(){
 	}
 	std::cout << "Please enter the Bank-ID to transfer (Q/q to cancel): "; std::cin >> transferToken;
 	std::cin.get();
-	if(transferToken == "Q" || transferToken == "q") return false;
+	if(transferToken[0] == 'Q' || transferToken[0] == 'q'){
+		wfp.close();
+		rfp.close();
+		if(std::remove("temp.dat"))
+		std::cerr << "An error occurred while deleting the file. . ." << '\n';
+		return false;
+	}
 	else if(transferToken == this->currentUser.getToken()){
 		std::cerr << "Invalid action. . ." << std::endl;
 		return false;
@@ -370,6 +423,7 @@ void atmdecl::ATM::userInfo(){
 		std::cout << line;
 	std::cout << upEdge2 << '\n';
 	std::cout << std::setw(20) << side << "[Bank-ID]: " << std::setw(27) << bank_id << side << '\n';
+	std::cout << std::setw(20) << side << "[Name   ]: " << std::setw(27) << this->currentUser.getName() << side << '\n';
 	std::cout << std::setw(20) << side << "[Balance]: " << std::setw(27) << std::fixed << std::setprecision(2) << this->currentUser.getBalance() << side << '\n';
 	std::cout << std::setw(20) << downEdge;
 	for(int i = 0; i < 38; i++)

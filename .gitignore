@@ -1,4 +1,5 @@
 *.rar
 *.zip
-./bin
+bin/main.exe
+*.dat
 

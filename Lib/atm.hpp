@@ -73,6 +73,7 @@
 				this->LOG_FP << this->currentUser.getToken() << " Withdrawal amount: " << value << std::endl;
 				return true;
 			}
+			double getUserBalance(){return this->currentUser.getBalance();}
 		private:
 			unsigned short int tries;
 			atmdecl::User currentUser;

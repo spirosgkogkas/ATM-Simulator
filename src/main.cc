@@ -72,6 +72,7 @@ int main(int argc, char const *argv[])
 							break;
 						case 2:
 							do{
+								std::cout << "Balance: " << std::setprecision(2) << atm.getUserBalance() << '\n';
 								std::cout << "Enter withdrawal amount (0 to cancel): "; std::cin >> value;
 								std::cin.get();
 								atm.clearScreen();
@@ -89,8 +90,6 @@ int main(int argc, char const *argv[])
 								std::cout << "Successfully transfer." << std::endl;
 								atm.updateUser();
 							}
-							else
-								std::cout << "There was an error with your transfer. . ." << std::endl;
 							std::cout << "Please press enter to continue. . .";
 							std::cin.ignore();
 							atm.clearScreen();
@@ -120,6 +119,7 @@ int main(int argc, char const *argv[])
 			case 2:
 				atm.createAccount();
 				std::cin.get();
+				std::cout << "Press enter to continue. . .\n";
 				atm.clearScreen();
 				break;
 			default:
