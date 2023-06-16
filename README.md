@@ -17,7 +17,7 @@ Run `make && make clean` to compile the source code.
 0. Exit
    * Exit the program.
 1. Log in
-   - To log in you should have a unique bank-ID\n\nwithout
+   - To log in you should have a unique bank-ID, if the bank-ID is invalid you will asked again
 2. Register
 
 During the creation of an account, we cannot create
