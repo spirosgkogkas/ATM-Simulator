@@ -10,18 +10,18 @@ Download the ATM-Simulator.exe
 *For Linux Users*
 
 Run `make && make clean` to compile the source code.
-> The executable will be at bin folder.
+> The executable will be in the bin folder.
 
 # How the app works
 
 0. Exit
    * Exit the program.
 1. Log in
-   - To log in you should have a unique bank-ID, if the bank-ID is invalid you will asked again
+   - To log in you should have a unique bank ID, if the bank ID is invalid you will be asked again
+     until you provide an existing bank ID or enter Q or Q.
 2. Register
-
-During the creation of an account, we cannot create
-an account that already exists.
+   - To register you should provide a unique ID if the ID already exists you will get redirected back to the main menu.
+   - 
 
 **User Menu**
 
