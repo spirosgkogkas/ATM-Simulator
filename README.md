@@ -1,4 +1,7 @@
-# Setup Information
+# ATM-Simulator
+ATM-Simulator is a computer-based program replicating the basic functionality of an ATM.
+
+## Setup Information
 
 *For Windows Setup*
 
@@ -6,22 +9,19 @@ Download the ATM-Simulator.exe
 
 *For Linux Users*
 
-Run make and then make clean.
-the executable will be in bin folder.
-Example: make && make clean
+Run `make && make clean` to compile the source code.
+> The executable will be in the bin folder.
 
-# Program Information
+# How the app works
 
-**ATM Menu**
-
-0: Exit
-
-1: Log in
-
-2: Register
-
-During the creation of an account, we cannot create
-an account that already exists.
+0. Exit
+   * Exit the program.
+1. Log in
+   - To log in you should have a unique bank ID, if the bank ID is invalid you will be asked again
+     until you provide an existing bank ID or enter Q or Q.
+2. Register
+   - To register you should provide a unique ID if the ID already exists you will get redirected back to the main menu.
+   - 
 
 **User Menu**
 
