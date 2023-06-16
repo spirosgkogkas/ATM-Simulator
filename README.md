@@ -1,3 +1,6 @@
+#ATM-Simulator
+ATM-Simulator is a computer-based program replicating the basic functionality of an ATM.
+
 # Setup Information
 
 *For Windows Setup*
