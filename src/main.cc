@@ -9,6 +9,7 @@ int main(int argc, char const *argv[])
 	std::string token, pin;
 	atmdecl::ATM atm;
 	do{
+		atm.clearScreen();
 		atm.atmMenu();
 		std::cout << "Enter Choice: "; std::cin >> choice;
 		std::cin.get();
@@ -18,6 +19,7 @@ int main(int argc, char const *argv[])
 				break;
 			case 1:
 				while(true){
+					atm.clearScreen();
 					std::cout << "Please enter your Bank-ID(Enter Q or q to quit): "; std::cin >> token;
 					std::cin.get();
 					atm.clearScreen();
@@ -117,6 +119,7 @@ int main(int argc, char const *argv[])
 				atm.clearScreen();
 				break;
 			case 2:
+				atm.clearScreen();
 				atm.createAccount();
 				std::cin.get();
 				std::cout << "Press enter to continue. . .\n";

@@ -53,6 +53,7 @@
 			void transactions();
 			void userInfo();
 			bool changePassword();
+			bool chkPin(std::string& pin);
 			void clearScreen(){
 				#ifdef _WIN32
 					system("cls");

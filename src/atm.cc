@@ -56,22 +56,16 @@ void atmdecl::ATM::atmMenu(){
 		DWORD style = GetWindowLong(console, GWL_STYLE);
 	    style &= ~(WS_THICKFRAME | WS_MAXIMIZEBOX);
 	    SetWindowLong(console, GWL_STYLE, style);
-	#else
-	    struct winsize size;
-	    ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
-	    size.ws_col = targetWidth;
-	    size.ws_row = targetHeight;
-	    ioctl(STDOUT_FILENO, TIOCSWINSZ, &size);
 	#endif
 	    
-	std::cout << std::setw(38)<< "ATM" << '\n';
+	std::cout << std::setw(38)<< "ATM" << std::endl;
 	std::cout << std::setw(20) << upEdge;
 	for(int i = 0; i < 38; i++)
 		std::cout << line;
-	std::cout << upEdge2 << '\n';
-	std::cout << std::setw(20) << side << "[0]:Exit" << std::setw(33) << side << '\n';
-	std::cout << std::setw(20) << side << "[1]:Login" << std::setw(32) << side << '\n';
-	std::cout << std::setw(20) << side << "[2]:Register" << std::setw(29) << side << '\n';
+	std::cout << upEdge2 << std::endl;
+	std::cout << std::setw(20) << side << "[0]:Exit" << std::setw(33) << side << std::endl;
+	std::cout << std::setw(20) << side << "[1]:Login" << std::setw(32) << side << std::endl;
+	std::cout << std::setw(20) << side << "[2]:Register" << std::setw(29) << side << std::endl;
 	std::cout << std::setw(20) << downEdge;
 	for(int i = 0; i < 38; i++)
 		std::cout << line;
@@ -80,6 +74,7 @@ void atmdecl::ATM::atmMenu(){
 
 bool atmdecl::ATM::setUser(std::string token){
 	std::string tempToken, tempPin, tempName, tempBalance;
+	
 	if(!this->membersDatFile.is_open()){
 		std::cerr << "An error occurred. . .\n";
 		return false;
@@ -125,7 +120,7 @@ bool atmdecl::ATM::createAccount(){
 		if(temp == temp2.substr(0, temp2.find(' '))){
 			std::cout << "Bank-ID already exists . ." << std::endl;
 			std::cin.get();
-			this->membersDatFile.close();
+			this->membersDatFile.seekg(0, std::ios::beg);
 			return false;
 		}
 	}
@@ -141,16 +136,31 @@ bool atmdecl::ATM::createAccount(){
 	this->currentUser.setToken(temp);
 	this->membersDatFile << temp << ' ';
 	std::cin.get();
-	std::cout << "Enter PIN: "; std::cin >> temp;
-	this->currentUser.setName(temp);
+	while(true){
+		try{
+			std::cout << "Enter PIN: ";
+			this->chkPin(temp);
+			break;
+		}catch(const char * exc){
+			this->clearScreen();
+			std::cout << exc << '\n';
+		}
+	}
+	this->currentUser.setPassword(temp);
 	this->membersDatFile << temp << ' ';
-	std::cin.get();
+	//We will not remove any character from std::cin because chkPin removes it.
 	std::cout << "Enter your name: "; std::cin >> temp;
 	this->currentUser.setName(temp);
 	this->membersDatFile << temp << ' ';
 	std::cin.get();
 	while(true){
 		std::cout << "Enter Balance: ";
+		while(std::cin.peek() == '\n' || std::cin.peek() == ' ' || std::cin.peek() == '\t'){
+			this->clearScreen();
+			std::cout << "Please enter valid balance. . .\n";
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "Enter Balance: ";
+		}
 		if(!(std::cin >> balance)){
 			/*                                    -User input validation for balance-
 			    +---------------------------------------------------------------------------------------------------------------------+
@@ -192,6 +202,7 @@ bool atmdecl::ATM::createAccount(){
 				}
 			}
 			if(found_character){
+				found_character = false;
 				std::cout << "Invalid balance. . .\nTry again. . .\n";
 				continue;
 			}
@@ -203,6 +214,9 @@ bool atmdecl::ATM::createAccount(){
 	std::cout << "Account created successfully.";
 	this->membersDatFile.close();
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
+	if(!this->membersDatFile.is_open())
+		std::cout << "Never opened.";
+	std::cin.get();
 	return true;
 }
 
@@ -215,18 +229,18 @@ void atmdecl::ATM::userMenu(){
 	std::string downEdge = "\u2517";
 	std::string downEdge2 = "\u251B";
 
-	std::cout << std::setw(41)<< "User Menu" << '\n';
+	std::cout << std::setw(41)<< "User Menu" << std::endl;
 	std::cout << std::setw(20) << upEdge;
 	for(int i = 0; i < 38; i++)
 		std::cout << line;
-	std::cout << upEdge2 << '\n';
-	std::cout << std::setw(20) << side << "[1]:Cash deposit" << std::setw(25) << side << '\n';
-	std::cout << std::setw(20) << side << "[2]:Cash withdrawal" << std::setw(22) << side << '\n';
-	std::cout << std::setw(20) << side << "[3]:Transfer" << std::setw(29) << side << '\n';
-	std::cout << std::setw(20) << side << "[4]:Latest transactions" << std::setw(18) << side << '\n';
-	std::cout << std::setw(20) << side << "[5]:Account information" << std::setw(18) << side << '\n';
-	std::cout << std::setw(20) << side << "[6]:Change Password" << std::setw(22) << side << '\n';
-	std::cout << std::setw(20) << side << "[7]:Exit" << std::setw(33) << side << '\n';
+	std::cout << upEdge2 << std::endl;
+	std::cout << std::setw(20) << side << "[1]:Cash deposit" << std::setw(25) << side << std::endl;
+	std::cout << std::setw(20) << side << "[2]:Cash withdrawal" << std::setw(22) << side << std::endl;
+	std::cout << std::setw(20) << side << "[3]:Transfer" << std::setw(29) << side << std::endl;
+	std::cout << std::setw(20) << side << "[4]:Latest transactions" << std::setw(18) << side << std::endl;
+	std::cout << std::setw(20) << side << "[5]:Account information" << std::setw(18) << side << std::endl;
+	std::cout << std::setw(20) << side << "[6]:Change Password" << std::setw(22) << side << std::endl;
+	std::cout << std::setw(20) << side << "[7]:Exit" << std::setw(33) << side << std::endl;
 	std::cout << std::setw(20) << downEdge;
 	for(int i = 0; i < 38; i++)
 		std::cout << line;
@@ -417,14 +431,14 @@ void atmdecl::ATM::userInfo(){
 	std::string downEdge2 = "\u251B";
 	std::string bank_id = this->currentUser.getToken();
 
-	std::cout << std::setw(45)<< "User information" << '\n';
+	std::cout << std::setw(45)<< "User information" << std::endl;
 	std::cout << std::setw(20) << upEdge;
 	for(int i = 0; i < 38; i++)
 		std::cout << line;
-	std::cout << upEdge2 << '\n';
-	std::cout << std::setw(20) << side << "[Bank-ID]: " << std::setw(27) << bank_id << side << '\n';
-	std::cout << std::setw(20) << side << "[Name   ]: " << std::setw(27) << this->currentUser.getName() << side << '\n';
-	std::cout << std::setw(20) << side << "[Balance]: " << std::setw(27) << std::fixed << std::setprecision(2) << this->currentUser.getBalance() << side << '\n';
+	std::cout << upEdge2 << std::endl;
+	std::cout << std::setw(20) << side << "[Bank-ID]: " << std::setw(27) << bank_id << side << std::endl;
+	std::cout << std::setw(20) << side << "[Name   ]: " << std::setw(27) << this->currentUser.getName() << side << std::endl;
+	std::cout << std::setw(20) << side << "[Balance]: " << std::setw(27) << std::fixed << std::setprecision(2) << this->currentUser.getBalance() << side << std::endl;
 	std::cout << std::setw(20) << downEdge;
 	for(int i = 0; i < 38; i++)
 		std::cout << line;
@@ -491,8 +505,50 @@ bool atmdecl::ATM::changePassword(){
 	}
 	rfp.close();
 	wfp.close();
-	/*Delete το προσωρινό αρχείο*/
+	/*Remove temp file*/
 	if(std::remove("temp.dat"))
 		std::cerr << "An error occurred while deleting the file. . ." << '\n';
+	return true;
+}
+
+bool atmdecl::ATM::chkPin(std::string& pin){
+	/*
+		+---------------------------------------------------------------------+
+		|       This method checks for the correct pin format.                |
+		+---------------------------------------------------------------------+
+		| First check will check if the user typed an empty PIN or if the     |
+		|first character is a whitespace character, if it is it will throw    |
+		|an exception depending on what the first character is..              |
+		|Next check will check if the pin had any whitespace character between|
+		+---------------------------------------------------------------------+
+		| The last check will check the length of the pin and if it's shorter |
+		|than 4 characters or longer than 20 characters.                      |
+		+---------------------------------------------------------------------+ 
+		| Keep in mind every check will clear anything in the std::cin buffer |
+		|and at the end of the method the '\n' character will be removed..    |
+		+---------------------------------------------------------------------+
+	*/
+	while(std::cin.peek() == '\n' || std::cin.peek() == ' ' || std::cin.peek() == '\t'){
+		if(std::cin.peek() == '\n'){
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			throw "Please provide a PIN. . .";
+		}
+		else{
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			throw "Unable to have spaces or tabs at the start of the PIN. . .";
+		}
+	}
+	std::cin >> pin;
+	if(std::cin.peek() == ' ' || std::cin.peek() == '\t'){
+		pin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		throw "Unable to have spaces or tabs between PIN. . .";
+	}
+	std::cin.get();
+
+	if((pin.length() < 4) || (pin.length() > 20)){
+		pin.clear();
+		throw "The pin must be between 4 to 20 length.";
+	}
 	return true;
 }
