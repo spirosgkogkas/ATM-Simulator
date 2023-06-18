@@ -20,8 +20,8 @@ Run `make && make clean` to compile the source code.
    - To log in you should have a unique bank ID, if the bank ID is invalid you will be asked again
      until you provide an existing bank ID or enter Q or Q.
 2. Register
-   - To register you should provide a unique ID if the ID already exists you will get redirected back to the main menu.
-   - 
+   - [Bank-ID] To register you should provide a unique ID if the ID already exists you will get redirected back to the main menu.
+   - [PIN] You can provide anything for the Pin at the moment 
 
 **User Menu**
 
