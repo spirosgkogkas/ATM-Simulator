@@ -10,6 +10,7 @@
 	#include <string>
 	#include <algorithm>
 	#include <vector>
+	#include <cctype>
 	#ifdef _WIN32
 		#include <windows.h>
 	#endif
@@ -54,6 +55,7 @@
 			void userInfo();
 			bool changePassword();
 			bool chkPin(std::string& pin);
+			bool chkName(std::string& name);
 			void clearScreen(){
 				#ifdef _WIN32
 					system("cls");

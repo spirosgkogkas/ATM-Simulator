@@ -149,10 +149,19 @@ bool atmdecl::ATM::createAccount(){
 	this->currentUser.setPassword(temp);
 	this->membersDatFile << temp << ' ';
 	//We will not remove any character from std::cin because chkPin removes it.
-	std::cout << "Enter your name: "; std::cin >> temp;
+	while(true){
+		try{
+			std::cout << "Enter your name: ";
+			this->chkName(temp);
+			break;
+		}catch(const char * exc){
+			this->clearScreen();
+			std::cout << exc << '\n';
+		}
+	}
 	this->currentUser.setName(temp);
 	this->membersDatFile << temp << ' ';
-	std::cin.get();
+
 	while(true){
 		std::cout << "Enter Balance: ";
 		while(std::cin.peek() == '\n' || std::cin.peek() == ' ' || std::cin.peek() == '\t'){
@@ -531,18 +540,18 @@ bool atmdecl::ATM::chkPin(std::string& pin){
 	while(std::cin.peek() == '\n' || std::cin.peek() == ' ' || std::cin.peek() == '\t'){
 		if(std::cin.peek() == '\n'){
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			throw "Please provide a PIN. . .";
+			throw "Please provide a valid PIN. . .";
 		}
 		else{
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			throw "Unable to have spaces or tabs at the start of the PIN. . .";
+			throw "Unable to use whitespace characters at the start of the PIN. . .";
 		}
 	}
 	std::cin >> pin;
 	if(std::cin.peek() == ' ' || std::cin.peek() == '\t'){
 		pin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		throw "Unable to have spaces or tabs between PIN. . .";
+		throw "Please remove tabs/spaces. . .";
 	}
 	std::cin.get();
 
@@ -550,5 +559,33 @@ bool atmdecl::ATM::chkPin(std::string& pin){
 		pin.clear();
 		throw "The pin must be between 4 to 20 length.";
 	}
+	return true;
+}
+
+bool atmdecl::ATM::chkName(std::string &name){
+	while(std::cin.peek() == '\n' || std::cin.peek() == ' ' || std::cin.peek() == '\t'){
+		if(std::cin.peek() == '\n'){
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			throw "Please provide a valid name. . .";
+		}
+		else{
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			throw "Unable to use whitespace characters at the start of the name. . .";
+		}
+	}
+	std::cin >> name;
+	if(std::cin.peek() == ' ' || std::cin.peek() == '\t'){
+		name.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		throw "Please remove tabs/spaces. . .";
+	}
+
+	for(char c : name)
+		if(!std::isalpha(c)){
+			name.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			throw "Please provide only letters. . .";
+		}
+	std::cin.get();
 	return true;
 }
