@@ -1,3 +1,8 @@
+/*
+	Author: Spiros Gkogkas
+	Date: March 22, 2022
+*/
+
 /*atm.hpp*/
 /*declarations*/
 

@@ -1,5 +1,6 @@
+*.txt
 *.rar
 *.zip
 bin/main.exe
 *.dat
-
+.vscode/*

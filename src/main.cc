@@ -1,3 +1,7 @@
+/*
+	Author: Spiros Gkogkas
+	Date: March 22, 2022
+*/
 #include "../Lib/atm.hpp"
 
 int main(int argc, char const *argv[])
@@ -11,7 +15,7 @@ int main(int argc, char const *argv[])
 	do{
 		atm.clearScreen();
 		atm.atmMenu();
-		std::cout << "Enter Choice: "; std::cin >> choice;
+		std::cout << "Enter the corresponding number for your desired transaction: "; std::cin >> choice;
 		std::cin.get();
 		switch(choice){
 			case 0:
@@ -58,7 +62,7 @@ int main(int argc, char const *argv[])
 				int userAction;
 				do{
 					atm.userMenu();
-					std::cout << "Enter choice: "; std::cin >> userAction;
+					std::cout << "Enter the corresponding number for your desired transaction: "; std::cin >> userAction;
 					std::cin.get();
 					atm.clearScreen();
 					switch(userAction){
@@ -121,12 +125,12 @@ int main(int argc, char const *argv[])
 			case 2:
 				atm.clearScreen();
 				atm.createAccount();
+				std::cout << "Press enter to continue. . .";
 				std::cin.get();
-				std::cout << "Press enter to continue. . .\n";
 				atm.clearScreen();
 				break;
 			default:
-				std::cout << "Invalid choice. . .\n";
+				std::cout << "Please provide one of the options avaiable. . .\nPress Enter to continue. . .";
 				std::cin.get();
 				atm.clearScreen();
 		}

@@ -1,3 +1,8 @@
+/*
+	Author: Spiros Gkogkas
+	Date: March 22, 2022
+*/
+
 #include "../Lib/atm.hpp"
 
 atmdecl::ATM::ATM(){
@@ -111,6 +116,7 @@ bool atmdecl::ATM::setUser(std::string token){
 bool atmdecl::ATM::createAccount(){
 	std::string temp, temp2;
 	double balance;
+	int ch = 0;
 	bool found_character = false;
 	/*Check for existing user*/
 	std::cout << "Please give a Bank-ID: "; std::cin >> temp;
@@ -118,7 +124,7 @@ bool atmdecl::ATM::createAccount(){
 	while(this->membersDatFile.peek() != EOF){
 		getline(this->membersDatFile, temp2);
 		if(temp == temp2.substr(0, temp2.find(' '))){
-			std::cout << "Bank-ID already exists . ." << std::endl;
+			std::cout << "Bank-ID already exists. . ." << std::endl;
 			std::cin.get();
 			this->membersDatFile.seekg(0, std::ios::beg);
 			return false;
@@ -172,9 +178,9 @@ bool atmdecl::ATM::createAccount(){
 		}
 		if(!(std::cin >> balance)){
 			/*                                    -User input validation for balance-
-			    +---------------------------------------------------------------------------------------------------------------------+
+				+---------------------------------------------------------------------------------------------------------------------+
 				| We check first for the std::cin return value from operation with >> operator                                        |
-				|if the return value is false it means user gave bad input..                                                          |
+				|if the return value is false it means that the user gave invalid input..                                             |
 				|We clear the state of the std::cin and then clear anything left inside the buffer and the user needs to input again. |
 				+---------------------------------------------------------------------------------------------------------------------+
                                                         -First check issues-
@@ -182,27 +188,26 @@ bool atmdecl::ATM::createAccount(){
 				| There would be a problem though if we used only this approach since the return value would be true if the operation |
 				|could manage to store atleast a value into the balance variable.                                                     |
 				| In Example:                                                                                                         |
-				|	- std::cin > balance -                                                                                            |
-				|	User input: 1#$asd2a                                                                                              |
-				|	Return value: true                                                                                                |
+				|   - std::cin > balance -                                                                                            |
+				|   User input: 1#$asd2a                                                                                              |
+				|   Return value: true                                                                                                |
 				|                                                                                                                     |
 				| So we will need to check if there are any characters left inside the buffer and if there are any we will prompt     |
 				|the user again to input the balance..                                                                                |
 				+---------------------------------------------------------------------------------------------------------------------+
 				                                      -Check buffer leftovers-
 				+---------------------------------------------------------------------------------------------------------------------+
-				| The code below reads until it reaches \n character or until it finds a character between 32 and 126                 |
+				| The code below reads until it reaches \n character or until it finds a character between 32 and 126 Ascii Codes     |
 				|if it finds any it will clear the rest of the buffer and will set the boolean found_character to true to input again.|
 				| In case of not finding any character it will simply break out the loop and continue it's purpose.                   |
 				+---------------------------------------------------------------------------------------------------------------------+
 			*/
 			this->clearScreen();
-			std::cout << "Invalid balance. . .\nTry again. . .\n";
+			std::cout << "Please provide only numbers. . .\n";
 			std::cin.clear();
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
 		else{
-			int ch;
 			while((ch = std::cin.get()) != '\n'){
 				if(ch >= 32 && ch <= 126){
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');	
@@ -212,7 +217,7 @@ bool atmdecl::ATM::createAccount(){
 			}
 			if(found_character){
 				found_character = false;
-				std::cout << "Invalid balance. . .\nTry again. . .\n";
+				std::cout << "Please provide only numbers. . .\n";
 				continue;
 			}
 			break;
@@ -220,12 +225,12 @@ bool atmdecl::ATM::createAccount(){
 	}
 	this->currentUser.setBalance(balance);
 	this->membersDatFile << balance << '\n';
-	std::cout << "Account created successfully.";
+	this->clearScreen();
+	std::cout << "Account created successfully.\n";
 	this->membersDatFile.close();
 	this->membersDatFile.open(BANK_DAT_FILE, std::ios::in);
 	if(!this->membersDatFile.is_open())
 		std::cout << "Never opened.";
-	std::cin.get();
 	return true;
 }
 

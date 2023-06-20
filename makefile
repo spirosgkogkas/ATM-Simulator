@@ -1,19 +1,15 @@
 CC = g++
 
+EXECUTABLE = ATM-Simulator
 OBJECTS = ./build/atm.o ./build/main.o
 
-all: create_folders bin/main
+all: create_folders bin/EXECUTABLE
 
 create_folders:
 	mkdir -p build bin
 
-all: create_build bin/main
-
-create_build:
-	mkdir -p build
-
-bin/main: $(OBJECTS)
-	$(CC) $(OBJECTS) -o ./bin/main -I ./Lib
+bin/EXECUTABLE: $(OBJECTS)
+	$(CC) $(OBJECTS) -o ./bin/$(EXECUTABLE) -I ./Lib
 
 ./build/main.o: ./build/atm.o ./src/main.cc ./Lib/atm.hpp
 	$(CC) ./src/main.cc -c -o ./build/main.o

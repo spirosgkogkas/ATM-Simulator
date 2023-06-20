@@ -21,7 +21,7 @@ Run `make && make clean` to compile the source code.
      until you provide an existing bank ID or enter Q or Q.
 2. Register
    - [Bank-ID] To register you should provide a unique ID if the ID already exists you will get redirected back to the main menu.
-   - [PIN] You can provide anything for the Pin at the moment 
+   - [PIN] The PIN must be between to 4-20 length
 
 **User Menu**
 
